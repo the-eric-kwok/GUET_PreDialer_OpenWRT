@@ -129,6 +129,5 @@ echo
 echo '正在进行 PPPoE 拨号...'
 cp /etc/config/network_pppoe /etc/config/network
 /etc/init.d/network reload  # Reload network service
-sleep 1
 echo
 echo "OK...All done!!"
