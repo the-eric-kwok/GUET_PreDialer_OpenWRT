@@ -105,7 +105,7 @@ OK...All done!!
 0 7 * * * /root/dial.sh > /var/log/dial.log 2>&1
 ```
 
-即，每天早上7点整雷打不动地自动拨号
+即，每天早上7点整雷打不动地自动拨号，并将日志存入`/var/log/dial.log`，只存储一天，第二天会把昨天的日志刷掉。
 
 然后 `nano /etc/rc.local` 编辑自启动，内容为
 
@@ -114,3 +114,5 @@ OK...All done!!
 ```
 
 大功告成！享受你的自动拨号路由器吧！
+## 运行效果截图
+![F02909BE-3BEE-499E-A61D-09A9B3E300D9.jpg](https://www.tuchuang001.com/images/2018/09/20/F02909BE-3BEE-499E-A61D-09A9B3E300D9.jpg)
