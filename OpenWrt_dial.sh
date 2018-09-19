@@ -3,7 +3,7 @@ echo "********MacOpen Tool(For Shell)********"
 echo "正在切换至dhcp..."
 cp /etc/config/network_dhcp /etc/config/network
 /etc/init.d/network reload  # reload network service
-sleep 1
+sleep 10  # wait for DHCP
 ##Server GXNU:202.193.160.123  GUET:172.16.1.1##
 server="172.16.1.1"
 echo "Server:" $server
