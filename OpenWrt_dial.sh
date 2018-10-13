@@ -1,18 +1,55 @@
 #!/bin/bash
+## config area
+server="172.16.1.1"  # GUET: 172.16.1.1; GXNU: 202.193.160.123
+isp=02               # 01: China Unicom, 02: China Telecom, 03: China Mobile
+username=            # your PPPoE username
+password=            # your PPPoE password
+
+
 echo "********MacOpen Tool(For Shell)********"
-echo "正在切换至dhcp..."
-cp /etc/config/network_dhcp /etc/config/network
-/etc/init.d/network reload  # reload network service
-sleep 10  # wait for DHCP
-##Server GXNU:202.193.160.123  GUET:172.16.1.1##
-server="172.16.1.1"
+
+function status_check() {
+  ifconfig | grep pppoe > /dev/null
+  if [[ $? -eq 0 ]]; then
+    echo "Already dialed"
+    exit 0
+  fi
+}
+
+function help() {
+  echo 'dial.sh [Switch]'
+  echo 'Usage: dial PPPoE in GUET or GXNU'
+  echo 'Switch:'
+  echo '          -h or --help: print this page'
+  echo '          -f or --force: force dial, ignore status check'
+  exit 0
+}
+
+if [[ $1 = "-h" ]] || [[ $1 = "--help" ]]; then
+  help
+elif [[ $1 = "-f" ]] || [[ $1 = "--force" ]]; then
+  :
+elif [[ -z $1 ]]; then
+  status_check
+fi
+
+
+echo "Switching to DHCP"
+uci set network.wan.proto='dhcp'
+uci delete network.wan.username
+uci delete network.wan.password
+uci commit network
+/etc/init.d/network reload
+sleep 10  # wait to get ip addr from DHCP server
+
 echo "Server:" $server
 mac=$(ifconfig eth1 | grep "HWaddr" | awk -F" " '{print $5}')
 echo "MAC Address:" $mac
 ipadd=$(ifconfig eth1 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}')
 echo "Local IP Address:" $ipadd
-isp=02  # 01: China Unicom, 02: China Telecom, 03: China Mobile
 echo "ISP Vendor Signature:" $isp
+echo "username:" $username
+echo "password:" $password
 echo "========================================="
 #########################
 #Mod Function
@@ -59,9 +96,9 @@ localInfo=(00 00 00 00 00 00
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00
-00 00 00 00 00 00)
-ispKey=1315423911  #1315423911 is 0x4e67c6a7
-localInfo[0]=97  # Uncleared
+00 00 00 00 00 00) #create array
+ispKey=1315423911  #1315423911 is magic number 0x4e67c6a7, see also page 19 in https://github.com/xuzhipengnt/ipclient_gxnu/blob/master/doc/%E5%8E%9F%E7%90%86%E6%96%87%E6%A1%A3.pdf
+localInfo[0]=97
 nmac=${#mac}
 nInfo=${#localInfo[@]}
 
@@ -71,14 +108,13 @@ for((i=0;i<4;i++)); do
   ipaddress[i]=${fff[i]}
 done
 for((i=0;i<4;i++)); do
-  localInfo[i+30]=${ipaddress[i]}  # Fill with IP Address
+  localInfo[i+30]=${ipaddress[i]}  #fill package with IP Address
 done
 
 for((i=0;i<nmac;i++)); do
-  localInfo[i+34]=$(c2ascll ${mac:$i:1})  # Fill with MAC Address
+  localInfo[i+34]=$(c2ascll ${mac:$i:1})  #fill package with MAC Address
 done
-localInfo[54]=$isp  # ISP
-localInfo[55]=0  # Request to PPPoE
+localInfo[54]=$isp  #ISP
 
 # Get Key Numbers
 ESI=0
@@ -112,12 +148,12 @@ let "ECX=ECX&0x7FFFFFFF"
 for((i=0;i<4;i++))
 do
     let "keypart=((ECX>>(i*8))&0x000000FF)"
-    localInfo[$nInfo-4+i]=$keypart  # Fill with Key Numbers
+    localInfo[$nInfo-4+i]=$keypart  #Key Numbers
 done
 data=''
 for((i=0;i<$nInfo;i++))
 do
-z=$(dec2hex ${localInfo[i]})  # Cover Dec to Hex
+z=$(dec2hex ${localInfo[i]})  #Cover Dec to Hex
 if [ ${#z} -lt 2 ]; then
   z="0"$z
 fi
@@ -126,8 +162,12 @@ done
 echo $data
 echo -n -e ${data}| socat - udp4-datagram:$server:20015  #Send it!
 echo
-echo '正在进行 PPPoE 拨号...'
-cp /etc/config/network_pppoe /etc/config/network
-/etc/init.d/network reload  # Reload network service
+echo 'Dialing PPPoE...'
+sleep 5
+uci set network.wan.proto='pppoe'
+uci set network.wan.username="$username"
+uci set network.wan.password="$password"
+uci commit network
+/etc/init.d/network reload
 echo
 echo "OK...All done!!"
