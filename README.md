@@ -54,25 +54,12 @@ socat version 1.7.3.1 on Aug 31 2018 01:29:48
 
 并且将 `$isp` 修改为你的运营商对应的数字（1：联通，2：电信，3：移动）
 
+然后在 username 和 password 那里输入你的宽带用户名和密码
+
 vi 的话输入 `:wq` 保存退出，nano 的话按 `Ctrl+O` 键保存，然后 `Ctrl+X` 退出
 
-## 第三步 生成配置文件
 
-OpenWRT 的网络配置文件在 `/etc/config/network`，先不用动
-
-我们将路由器的 `eth1` 网卡调至dhcp模式，此时应该能获取到 IP 地址，并且能ping得通 `172.16.1.1` 这个服务器（师大的是 `202.193.160.123`）
-
-我们输入这个命令：
-
-`cp /etc/config/network /etc/config/network_dhcp`
-
-然后将 `eth1` 调到PPPoE模式，此时应该无法上网，也 ping 不通服务器，我们输入下面这个命令：
-
-`cp /etc/config/network /etc/config/network_pppoe`
-
-这样相当于我们制作了两份脚本里面会用到的配置文件，这一步一定要做，不然脚本会报 `cp: can't stat 'network_dhcp': No such file or directory` 的错误
-
-## 第四步 测试是否可以连接
+## 第三步 测试是否可以连接
 
 `chmod +x dial.sh` 这一步是给脚本加上可执行权限
 
@@ -97,7 +84,7 @@ OK...All done!!
 
 并且你发现电脑可以上网了，那就证明成功了。我们还差最后一步就完成了！
 
-## 第五步 创建计划任务和自启动
+## 第四步 创建计划任务和自启动
 
 `crontab -e` 编辑计划任务，内容为
 
@@ -115,4 +102,4 @@ OK...All done!!
 
 大功告成！享受你的自动拨号路由器吧！
 ## 运行效果截图
-![F02909BE-3BEE-499E-A61D-09A9B3E300D9.jpg](https://www.tuchuang001.com/images/2018/09/20/F02909BE-3BEE-499E-A61D-09A9B3E300D9.jpg)
+![运行效果截图](https://tuchuang001.com/images/2018/10/13/TIM20181013143827.png)
