@@ -107,4 +107,4 @@ OK...All done!!
 ![运行效果截图](https://tuchuang001.com/images/2018/10/13/TIM20181013143827.png)
 
 ## 视频教程
-<iframe height=498 width=510 src='http://player.youku.com/embed/XMzg2MTcxNTE5Ng==' frameborder=0 'allowfullscreen'></iframe>
+[前往优酷观看](https://v.youku.com/v_show/id_XMzg2MTcxNTE5Ng==)
