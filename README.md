@@ -105,3 +105,6 @@ OK...All done!!
 大功告成！享受你的自动拨号路由器吧！
 ## 运行效果截图
 ![运行效果截图](https://tuchuang001.com/images/2018/10/13/TIM20181013143827.png)
+
+## 视频教程
+<iframe height=498 width=510 src='http://player.youku.com/embed/XMzg2MTcxNTE5Ng==' frameborder=0 'allowfullscreen'></iframe>
