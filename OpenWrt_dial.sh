@@ -25,6 +25,11 @@ function help() {
   exit 0
 }
 
+function ping_test() {
+  ping -w 5 ${ADDRESS}
+  return $?
+}
+
 if [[ $1 = "-h" ]] || [[ $1 = "--help" ]]; then
   help
 elif [[ $1 = "-f" ]] || [[ $1 = "--force" ]]; then
@@ -169,5 +174,8 @@ uci set network.wan.username="$username"
 uci set network.wan.password="$password"
 uci commit network
 /etc/init.d/network reload
+sleep 10
+ping_test
+[[ $? != 0 ]] && exit 1
 echo
 echo "OK...All done!!"
