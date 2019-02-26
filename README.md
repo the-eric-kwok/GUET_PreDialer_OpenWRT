@@ -86,6 +86,31 @@ OK...All done!!
 
 并且你发现电脑可以上网了，那就证明成功了。我们还差最后一步就完成了！
 
+若是输出类似于
+
+```
+********MacOpen Tool(For Shell)********
+Switching to DHCP
+Server: 172.16.1.1
+MAC Address: xx:xx:xx:xx:xx:xx
+Local IP Address: 
+ISP Vendor Signature: 02
+=========================================
+\x61\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+
+Dialing PPPoE...
+
+OK...All done!!
+```
+
+则为 DHCP 获取IP地址失败，可以适当调大dhcp的延时
+
+使用你喜欢的编辑器打开脚本，定位到`Switching to DHCP`，然后往下找到
+```
+sleep 10  # wait to get ip addr from DHCP server
+```
+把10改成15或者20即可，以能成功获取到IP地址的最小延时为准
+
 ## 第四步 创建计划任务和自启动
 
 `crontab -e` 编辑计划任务，内容为
