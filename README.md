@@ -110,7 +110,7 @@ OK...All done!!
 
 则为 DHCP 获取IP地址失败，可以适当调大dhcp的延时
 
-使用你喜欢的编辑器打开脚本，定位到`Switching to DHCP`，然后往下找到
+使用 vi 打开脚本，定位到`Switching to DHCP`，然后往下找到
 ```
 sleep 10  # wait to get ip addr from DHCP server
 ```
@@ -121,10 +121,10 @@ sleep 10  # wait to get ip addr from DHCP server
 `crontab -e` 编辑计划任务，内容为
 
 ```
-0 7 * * * /root/dial.sh > /var/log/dial.log 2>&1
+0 7 * * * /root/dial.sh >> /tmp/dial.log 2>&1
 ```
 
-即，每天早上7点整雷打不动地自动拨号，并将日志存入`/var/log/dial.log`，只存储一天，第二天会把昨天的日志刷掉。
+即，每天早上7点整雷打不动地自动拨号，并将日志存入`/tmp/dial.log`.
 
 然后 `nano /etc/rc.local` 编辑自启动，内容为
 
@@ -134,7 +134,7 @@ sleep 10  # wait to get ip addr from DHCP server
 
 大功告成！享受你的自动拨号路由器吧！
 ## 运行效果截图
-![运行效果截图](https://tuchuang001.com/images/2018/10/13/TIM20181013143827.png)
+![](https://github.com/the-eric-kwok/GUET_PreDialer_OpenWRT/blob/master/Preview.png?raw=true)
 
 ## 视频教程
 [前往优酷观看](https://v.youku.com/v_show/id_XMzg2MTcxNTE5Ng==)
